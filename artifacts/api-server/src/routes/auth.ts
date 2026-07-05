@@ -30,6 +30,10 @@ router.post("/auth/login", async (req, res) => {
 
   (req.session as any).userId = user.id;
 
+  await new Promise<void>((resolve, reject) => {
+    req.session.save((err) => (err ? reject(err) : resolve()));
+  });
+
   res.json({
     user: {
       id: user.id,
