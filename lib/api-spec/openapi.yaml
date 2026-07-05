@@ -1,22 +1,35 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: نظام إدارة حلقات التحفيظ
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: teachers
+    description: Teachers management
+  - name: circles
+    description: Circles management
+  - name: students
+    description: Students management
+  - name: attendance
+    description: Attendance management
+  - name: recitations
+    description: Recitation records
+  - name: reports
+    description: Reports
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +37,1005 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginInput"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "200":
+          description: Logged out
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+
+  /teachers:
+    get:
+      operationId: getTeachers
+      tags: [teachers]
+      summary: List all teachers
+      responses:
+        "200":
+          description: List of teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Teacher"
+    post:
+      operationId: createTeacher
+      tags: [teachers]
+      summary: Create a teacher
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeacherInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teacher"
+
+  /teachers/{id}:
+    get:
+      operationId: getTeacher
+      tags: [teachers]
+      summary: Get a teacher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Teacher
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teacher"
+    patch:
+      operationId: updateTeacher
+      tags: [teachers]
+      summary: Update a teacher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeacherUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Teacher"
+    delete:
+      operationId: deleteTeacher
+      tags: [teachers]
+      summary: Delete a teacher
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /circles:
+    get:
+      operationId: getCircles
+      tags: [circles]
+      summary: List all circles
+      responses:
+        "200":
+          description: List of circles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Circle"
+    post:
+      operationId: createCircle
+      tags: [circles]
+      summary: Create a circle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CircleInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Circle"
+
+  /circles/{id}:
+    get:
+      operationId: getCircle
+      tags: [circles]
+      summary: Get a circle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Circle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Circle"
+    patch:
+      operationId: updateCircle
+      tags: [circles]
+      summary: Update a circle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CircleUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Circle"
+    delete:
+      operationId: deleteCircle
+      tags: [circles]
+      summary: Delete a circle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /circles/{id}/students:
+    get:
+      operationId: getCircleStudents
+      tags: [circles]
+      summary: Get students in a circle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Students in circle
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+
+  /students:
+    get:
+      operationId: getStudents
+      tags: [students]
+      summary: List all students
+      parameters:
+        - name: circleId
+          in: query
+          schema:
+            type: integer
+        - name: afternoonTeacherId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of students
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+    post:
+      operationId: createStudent
+      tags: [students]
+      summary: Create a student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+  /students/{id}:
+    get:
+      operationId: getStudent
+      tags: [students]
+      summary: Get a student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Student
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    patch:
+      operationId: updateStudent
+      tags: [students]
+      summary: Update a student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StudentUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+    delete:
+      operationId: deleteStudent
+      tags: [students]
+      summary: Delete a student
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /attendance:
+    get:
+      operationId: getAttendance
+      tags: [attendance]
+      summary: Get attendance records
+      parameters:
+        - name: circleId
+          in: query
+          schema:
+            type: integer
+        - name: studentId
+          in: query
+          schema:
+            type: integer
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Attendance records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttendanceRecord"
+    post:
+      operationId: recordAttendance
+      tags: [attendance]
+      summary: Record attendance for a session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AttendanceBatchInput"
+      responses:
+        "201":
+          description: Attendance recorded
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AttendanceRecord"
+
+  /attendance/{id}:
+    patch:
+      operationId: updateAttendance
+      tags: [attendance]
+      summary: Update an attendance record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AttendanceUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttendanceRecord"
+
+  /recitations:
+    get:
+      operationId: getRecitations
+      tags: [recitations]
+      summary: Get recitation records
+      parameters:
+        - name: studentId
+          in: query
+          schema:
+            type: integer
+        - name: circleId
+          in: query
+          schema:
+            type: integer
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: fromDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: afternoonTeacherId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Recitation records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RecitationRecord"
+    post:
+      operationId: createRecitation
+      tags: [recitations]
+      summary: Create a recitation record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecitationInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecitationRecord"
+
+  /recitations/{id}:
+    patch:
+      operationId: updateRecitation
+      tags: [recitations]
+      summary: Update a recitation record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecitationUpdate"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecitationRecord"
+    delete:
+      operationId: deleteRecitation
+      tags: [recitations]
+      summary: Delete a recitation record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /reports/circle-attendance:
+    get:
+      operationId: getCircleAttendanceReport
+      tags: [reports]
+      summary: Get attendance report for a circle
+      parameters:
+        - name: circleId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: fromDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Circle attendance report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CircleAttendanceReport"
+
+  /reports/afternoon-teacher:
+    get:
+      operationId: getAfternoonTeacherReport
+      tags: [reports]
+      summary: Get recitation report for afternoon teacher's students
+      parameters:
+        - name: teacherId
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: fromDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        "200":
+          description: Afternoon teacher report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AfternoonTeacherReport"
+
+  /reports/dashboard:
+    get:
+      operationId: getDashboard
+      tags: [reports]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    LoginInput:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [user]
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+
+    User:
+      type: object
+      required: [id, name, username, role]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        username:
+          type: string
+        role:
+          type: string
+          enum: [supervisor, morning_teacher, afternoon_teacher]
+
+    Teacher:
+      type: object
+      required: [id, name, role]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        username:
+          type: string
+        role:
+          type: string
+          enum: [supervisor, morning_teacher, afternoon_teacher]
+        phone:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    TeacherInput:
+      type: object
+      required: [name, username, password, role]
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [supervisor, morning_teacher, afternoon_teacher]
+        phone:
+          type: string
+
+    TeacherUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [supervisor, morning_teacher, afternoon_teacher]
+        phone:
+          type: string
+
+    Circle:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        teacherId:
+          type: ["integer", "null"]
+        teacherName:
+          type: ["string", "null"]
+        studentCount:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    CircleInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        teacherId:
+          type: integer
+
+    CircleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        teacherId:
+          type: ["integer", "null"]
+
+    Student:
+      type: object
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        circleId:
+          type: ["integer", "null"]
+        circleName:
+          type: ["string", "null"]
+        afternoonTeacherId:
+          type: ["integer", "null"]
+        afternoonTeacherName:
+          type: ["string", "null"]
+        morningTeacherName:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    StudentInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        circleId:
+          type: integer
+        afternoonTeacherId:
+          type: integer
+        phone:
+          type: string
+
+    StudentUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        circleId:
+          type: ["integer", "null"]
+        afternoonTeacherId:
+          type: ["integer", "null"]
+        phone:
+          type: string
+
+    AttendanceRecord:
+      type: object
+      required: [id, studentId, date, status]
+      properties:
+        id:
+          type: integer
+        studentId:
+          type: integer
+        studentName:
+          type: string
+        circleId:
+          type: ["integer", "null"]
+        circleName:
+          type: ["string", "null"]
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [present, absent, excused]
+        notes:
+          type: ["string", "null"]
+
+    AttendanceBatchInput:
+      type: object
+      required: [date, circleId, records]
+      properties:
+        date:
+          type: string
+          format: date
+        circleId:
+          type: integer
+        records:
+          type: array
+          items:
+            type: object
+            required: [studentId, status]
+            properties:
+              studentId:
+                type: integer
+              status:
+                type: string
+                enum: [present, absent, excused]
+              notes:
+                type: string
+
+    AttendanceUpdate:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [present, absent, excused]
+        notes:
+          type: string
+
+    RecitationRecord:
+      type: object
+      required: [id, studentId, date]
+      properties:
+        id:
+          type: integer
+        studentId:
+          type: integer
+        studentName:
+          type: string
+        circleId:
+          type: ["integer", "null"]
+        circleName:
+          type: ["string", "null"]
+        morningTeacherName:
+          type: ["string", "null"]
+        afternoonTeacherId:
+          type: ["integer", "null"]
+        date:
+          type: string
+          format: date
+        fromSurah:
+          type: string
+        toSurah:
+          type: string
+        fromVerse:
+          type: ["integer", "null"]
+        toVerse:
+          type: ["integer", "null"]
+        grade:
+          type: ["string", "null"]
+          enum: ["excellent", "good", "acceptable", "needs_improvement", null]
+        notes:
+          type: ["string", "null"]
+
+    RecitationInput:
+      type: object
+      required: [studentId, date, fromSurah, toSurah]
+      properties:
+        studentId:
+          type: integer
+        date:
+          type: string
+          format: date
+        fromSurah:
+          type: string
+        toSurah:
+          type: string
+        fromVerse:
+          type: integer
+        toVerse:
+          type: integer
+        grade:
+          type: string
+          enum: [excellent, good, acceptable, needs_improvement]
+        notes:
+          type: string
+
+    RecitationUpdate:
+      type: object
+      properties:
+        fromSurah:
+          type: string
+        toSurah:
+          type: string
+        fromVerse:
+          type: ["integer", "null"]
+        toVerse:
+          type: ["integer", "null"]
+        grade:
+          type: ["string", "null"]
+          enum: ["excellent", "good", "acceptable", "needs_improvement", null]
+        notes:
+          type: string
+
+    StudentAttendanceSummary:
+      type: object
+      required: [studentId, studentName, totalDays, presentDays, absentDays, excusedDays]
+      properties:
+        studentId:
+          type: integer
+        studentName:
+          type: string
+        totalDays:
+          type: integer
+        presentDays:
+          type: integer
+        absentDays:
+          type: integer
+        excusedDays:
+          type: integer
+        attendanceRate:
+          type: number
+
+    CircleAttendanceReport:
+      type: object
+      required: [circle, fromDate, toDate, students]
+      properties:
+        circle:
+          $ref: "#/components/schemas/Circle"
+        fromDate:
+          type: string
+        toDate:
+          type: string
+        totalSessions:
+          type: integer
+        students:
+          type: array
+          items:
+            $ref: "#/components/schemas/StudentAttendanceSummary"
+
+    StudentMorningDetail:
+      type: object
+      required: [studentId, studentName]
+      properties:
+        studentId:
+          type: integer
+        studentName:
+          type: string
+        morningCircleName:
+          type: ["string", "null"]
+        morningTeacherName:
+          type: ["string", "null"]
+        recitations:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecitationRecord"
+        attendance:
+          type: array
+          items:
+            $ref: "#/components/schemas/AttendanceRecord"
+
+    AfternoonTeacherReport:
+      type: object
+      required: [teacher, fromDate, toDate, students]
+      properties:
+        teacher:
+          $ref: "#/components/schemas/Teacher"
+        fromDate:
+          type: string
+        toDate:
+          type: string
+        students:
+          type: array
+          items:
+            $ref: "#/components/schemas/StudentMorningDetail"
+
+    DashboardStats:
+      type: object
+      required: [totalStudents, totalCircles, totalTeachers, todayPresent, todayAbsent]
+      properties:
+        totalStudents:
+          type: integer
+        totalCircles:
+          type: integer
+        totalTeachers:
+          type: integer
+        todayPresent:
+          type: integer
+        todayAbsent:
+          type: integer
+        todayAttendanceRate:
+          type: number
+        recentRecitations:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecitationRecord"
+        circleStats:
+          type: array
+          items:
+            type: object
+            required: [circleId, circleName, studentCount, todayPresent]
+            properties:
+              circleId:
+                type: integer
+              circleName:
+                type: string
+              studentCount:
+                type: integer
+              todayPresent:
+                type: integer
