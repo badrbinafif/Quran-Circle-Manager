@@ -29,5 +29,7 @@ export interface RecitationRecord {
   /** @nullable */
   grade?: RecitationRecordGrade;
   /** @nullable */
+  errorsCount?: number | null;
+  /** @nullable */
   notes?: string | null;
 }

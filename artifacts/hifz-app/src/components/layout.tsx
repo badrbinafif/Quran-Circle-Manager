@@ -23,6 +23,7 @@ const getNavigation = (role?: string) => {
     { name: "سجل الحضور", href: "/attendance", icon: ClipboardList, roles: ["supervisor", "morning_teacher"] },
     { name: "تقرير الحلقات", href: "/reports/circle-attendance", icon: FileBarChart, roles: ["supervisor", "morning_teacher"] },
     { name: "تقرير الفترات", href: "/reports/afternoon-teacher", icon: FileBarChart, roles: ["supervisor", "afternoon_teacher"] },
+    { name: "كشف متابعة الطالب", href: "/reports/student-followup", icon: FileBarChart, roles: ["supervisor", "morning_teacher", "afternoon_teacher"] },
   ];
 
   if (!role) return [];

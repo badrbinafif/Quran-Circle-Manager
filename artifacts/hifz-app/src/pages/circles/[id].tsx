@@ -27,6 +27,7 @@ const recitationSchema = z.object({
   fromVerse: z.coerce.number().optional(),
   toVerse: z.coerce.number().optional(),
   grade: z.enum(["excellent", "good", "acceptable", "needs_improvement"]),
+  errorsCount: z.coerce.number().min(0).optional(),
   notes: z.string().optional()
 });
 
@@ -216,6 +217,7 @@ function RecitationCard({ student, today, onSave }: { student: any, today: strin
       fromSurah: "",
       toSurah: "",
       grade: "excellent",
+      errorsCount: 0,
       notes: ""
     }
   });
@@ -314,6 +316,19 @@ function RecitationCard({ student, today, onSave }: { student: any, today: strin
                       <SelectItem value="needs_improvement">يحتاج تحسين</SelectItem>
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="errorsCount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>عدد الأخطاء</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} {...field} value={field.value ?? 0} onChange={e => field.onChange(parseInt(e.target.value) || 0)} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

@@ -16,5 +16,7 @@ export interface RecitationUpdate {
   toVerse?: number | null;
   /** @nullable */
   grade?: RecitationUpdateGrade;
+  /** @nullable */
+  errorsCount?: number | null;
   notes?: string;
 }

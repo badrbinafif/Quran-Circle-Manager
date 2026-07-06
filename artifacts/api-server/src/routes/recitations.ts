@@ -54,6 +54,7 @@ async function formatRecitation(r: typeof recitationsTable.$inferSelect) {
     fromVerse: r.fromVerse,
     toVerse: r.toVerse,
     grade: r.grade,
+    errorsCount: r.errorsCount,
     notes: r.notes,
   };
 }
@@ -90,7 +91,7 @@ router.get("/recitations", async (req, res) => {
 });
 
 router.post("/recitations", async (req, res) => {
-  const { studentId, date, fromSurah, toSurah, fromVerse, toVerse, grade, notes } =
+  const { studentId, date, fromSurah, toSurah, fromVerse, toVerse, grade, errorsCount, notes } =
     req.body;
   if (!studentId || !date || !fromSurah || !toSurah) {
     res.status(400).json({ error: "Missing required fields" });
@@ -115,6 +116,7 @@ router.post("/recitations", async (req, res) => {
       fromVerse: fromVerse ?? null,
       toVerse: toVerse ?? null,
       grade: grade ?? null,
+      errorsCount: errorsCount ?? null,
       notes: notes ?? null,
     })
     .returning();
@@ -124,7 +126,7 @@ router.post("/recitations", async (req, res) => {
 
 router.patch("/recitations/:id", async (req, res) => {
   const id = parseInt(req.params.id);
-  const { fromSurah, toSurah, fromVerse, toVerse, grade, notes } = req.body;
+  const { fromSurah, toSurah, fromVerse, toVerse, grade, errorsCount, notes } = req.body;
 
   const updateData: Record<string, unknown> = {};
   if (fromSurah !== undefined) updateData.fromSurah = fromSurah;
@@ -132,6 +134,7 @@ router.patch("/recitations/:id", async (req, res) => {
   if (fromVerse !== undefined) updateData.fromVerse = fromVerse;
   if (toVerse !== undefined) updateData.toVerse = toVerse;
   if (grade !== undefined) updateData.grade = grade;
+  if (errorsCount !== undefined) updateData.errorsCount = errorsCount;
   if (notes !== undefined) updateData.notes = notes;
 
   const [recitation] = await db

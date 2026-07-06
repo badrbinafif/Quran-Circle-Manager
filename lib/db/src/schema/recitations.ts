@@ -33,6 +33,7 @@ export const recitationsTable = pgTable("recitations", {
   fromVerse: integer("from_verse"),
   toVerse: integer("to_verse"),
   grade: recitationGradeEnum("grade"),
+  errorsCount: integer("errors_count"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });

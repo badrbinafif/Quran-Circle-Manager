@@ -17,6 +17,7 @@ import StudentDetail from "@/pages/students/[id]";
 import Teachers from "@/pages/teachers/index";
 import CircleAttendanceReport from "@/pages/reports/circle-attendance";
 import AfternoonTeacherReport from "@/pages/reports/afternoon-teacher";
+import StudentFollowupReport from "@/pages/reports/student-followup";
 import AttendanceList from "@/pages/attendance/index";
 
 const queryClient = new QueryClient({
@@ -60,6 +61,7 @@ function AppRouter() {
       <Route path="/teachers" component={(props) => <ProtectedRoute component={Teachers} {...props} />} />
       <Route path="/reports/circle-attendance" component={(props) => <ProtectedRoute component={CircleAttendanceReport} {...props} />} />
       <Route path="/reports/afternoon-teacher" component={(props) => <ProtectedRoute component={AfternoonTeacherReport} {...props} />} />
+      <Route path="/reports/student-followup" component={(props) => <ProtectedRoute component={StudentFollowupReport} {...props} />} />
       <Route path="/attendance" component={(props) => <ProtectedRoute component={AttendanceList} {...props} />} />
       <Route component={NotFound} />
     </Switch>

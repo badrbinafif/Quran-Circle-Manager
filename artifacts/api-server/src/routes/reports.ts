@@ -180,6 +180,7 @@ router.get("/reports/afternoon-teacher", async (req, res) => {
           fromVerse: r.fromVerse,
           toVerse: r.toVerse,
           grade: r.grade,
+          errorsCount: r.errorsCount,
           notes: r.notes,
         })),
         attendance: attendance.map((a) => ({

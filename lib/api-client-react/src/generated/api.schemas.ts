@@ -236,6 +236,8 @@ export interface RecitationRecord {
   /** @nullable */
   grade?: RecitationRecordGrade;
   /** @nullable */
+  errorsCount?: number | null;
+  /** @nullable */
   notes?: string | null;
 }
 
@@ -257,6 +259,7 @@ export interface RecitationInput {
   fromVerse?: number;
   toVerse?: number;
   grade?: RecitationInputGrade;
+  errorsCount?: number;
   notes?: string;
 }
 
@@ -282,6 +285,8 @@ export interface RecitationUpdate {
   toVerse?: number | null;
   /** @nullable */
   grade?: RecitationUpdateGrade;
+  /** @nullable */
+  errorsCount?: number | null;
   notes?: string;
 }
 

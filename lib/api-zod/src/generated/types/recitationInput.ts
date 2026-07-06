@@ -15,5 +15,6 @@ export interface RecitationInput {
   fromVerse?: number;
   toVerse?: number;
   grade?: RecitationInputGrade;
+  errorsCount?: number;
   notes?: string;
 }

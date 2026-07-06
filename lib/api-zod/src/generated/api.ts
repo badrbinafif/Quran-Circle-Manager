@@ -442,6 +442,7 @@ export const GetRecitationsResponseItem = zod.object({
   "fromVerse": zod.number().nullish(),
   "toVerse": zod.number().nullish(),
   "grade": zod.union([zod.literal('excellent'),zod.literal('good'),zod.literal('acceptable'),zod.literal('needs_improvement'),zod.literal(null)]).nullish(),
+  "errorsCount": zod.number().nullish(),
   "notes": zod.string().nullish()
 })
 export const GetRecitationsResponse = zod.array(GetRecitationsResponseItem)
@@ -458,6 +459,7 @@ export const CreateRecitationBody = zod.object({
   "fromVerse": zod.number().optional(),
   "toVerse": zod.number().optional(),
   "grade": zod.enum(['excellent', 'good', 'acceptable', 'needs_improvement']).optional(),
+  "errorsCount": zod.number().optional(),
   "notes": zod.string().optional()
 })
 
@@ -475,6 +477,7 @@ export const CreateRecitationResponse = zod.object({
   "fromVerse": zod.number().nullish(),
   "toVerse": zod.number().nullish(),
   "grade": zod.union([zod.literal('excellent'),zod.literal('good'),zod.literal('acceptable'),zod.literal('needs_improvement'),zod.literal(null)]).nullish(),
+  "errorsCount": zod.number().nullish(),
   "notes": zod.string().nullish()
 })
 
@@ -492,6 +495,7 @@ export const UpdateRecitationBody = zod.object({
   "fromVerse": zod.number().nullish(),
   "toVerse": zod.number().nullish(),
   "grade": zod.union([zod.literal('excellent'),zod.literal('good'),zod.literal('acceptable'),zod.literal('needs_improvement'),zod.literal(null)]).nullish(),
+  "errorsCount": zod.number().nullish(),
   "notes": zod.string().optional()
 })
 
@@ -509,6 +513,7 @@ export const UpdateRecitationResponse = zod.object({
   "fromVerse": zod.number().nullish(),
   "toVerse": zod.number().nullish(),
   "grade": zod.union([zod.literal('excellent'),zod.literal('good'),zod.literal('acceptable'),zod.literal('needs_improvement'),zod.literal(null)]).nullish(),
+  "errorsCount": zod.number().nullish(),
   "notes": zod.string().nullish()
 })
 
@@ -595,6 +600,7 @@ export const GetAfternoonTeacherReportResponse = zod.object({
   "fromVerse": zod.number().nullish(),
   "toVerse": zod.number().nullish(),
   "grade": zod.union([zod.literal('excellent'),zod.literal('good'),zod.literal('acceptable'),zod.literal('needs_improvement'),zod.literal(null)]).nullish(),
+  "errorsCount": zod.number().nullish(),
   "notes": zod.string().nullish()
 })).optional(),
   "attendance": zod.array(zod.object({
@@ -635,6 +641,7 @@ export const GetDashboardResponse = zod.object({
   "fromVerse": zod.number().nullish(),
   "toVerse": zod.number().nullish(),
   "grade": zod.union([zod.literal('excellent'),zod.literal('good'),zod.literal('acceptable'),zod.literal('needs_improvement'),zod.literal(null)]).nullish(),
+  "errorsCount": zod.number().nullish(),
   "notes": zod.string().nullish()
 })).optional(),
   "circleStats": zod.array(zod.object({
