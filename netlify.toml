@@ -1,0 +1,18 @@
+[build]
+  command = "pnpm install && pnpm run build"
+  publish = "artifacts/hifz-app/dist/public"
+
+[build.environment]
+  PORT = "3000"
+  BASE_PATH = "/"
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
